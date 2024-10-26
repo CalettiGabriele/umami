@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from db_classes import Associato, Prestazione, Servizio, Transazione
 from db_connectors import get_session
 
-# Funzioni CRUD
+# CRUD Ops
 def add_entry(entry):
     """Aggiunge un nuovo record alla tabella specificata."""
     session = get_session()
@@ -14,7 +14,7 @@ def add_entry(entry):
 def delete_entry(entry_class, entry_id):
     """Elimina un record dalla tabella specificata dato il suo ID."""
     session = get_session()
-    entry = session.query(entry_class).get(entry_id)
+    entry = session.get(entry_class, entry_id)
     if entry:
         session.delete(entry)
         session.commit()
@@ -24,7 +24,7 @@ def delete_entry(entry_class, entry_id):
 def modify_entry(entry_class, entry_id, **kwargs):
     """Modifica un record della tabella specificata con i nuovi valori di kwargs."""
     session = get_session()
-    entry = session.query(entry_class).get(entry_id)
+    entry = session.get(entry_class, entry_id)
     if entry:
         for key, value in kwargs.items():
             setattr(entry, key, value)
@@ -33,7 +33,7 @@ def modify_entry(entry_class, entry_id, **kwargs):
     return None
 
 
-# Funzioni specifiche per ogni tabella
+# Tables Ops
 def add_associato(nome, cognome, data_nascita, luogo_nascita, email, cellulare, data_associazione, collegamenti):
     associato = Associato(
         nome=nome,
@@ -50,8 +50,8 @@ def add_associato(nome, cognome, data_nascita, luogo_nascita, email, cellulare, 
 def delete_associato(associato_id):
     return delete_entry(Associato, associato_id)
 
-def modify_associato(associato_id, **kwargs):
-    return modify_entry(Associato, associato_id, **kwargs)
+def modify_associato(associato_id, fields):
+    return modify_entry(Associato, associato_id, fields)
 
 def add_prestazione(id_servizio, usufruitore, data_prestazione):
     prestazione = Prestazione(
@@ -64,8 +64,8 @@ def add_prestazione(id_servizio, usufruitore, data_prestazione):
 def delete_prestazione(prestazione_id):
     return delete_entry(Prestazione, prestazione_id)
 
-def modify_prestazione(prestazione_id, **kwargs):
-    return modify_entry(Prestazione, prestazione_id, **kwargs)
+def modify_prestazione(prestazione_id, fields):
+    return modify_entry(Prestazione, prestazione_id, fields)
 
 def add_servizio(descrizione, costo, personale):
     servizio = Servizio(
@@ -78,8 +78,8 @@ def add_servizio(descrizione, costo, personale):
 def delete_servizio(servizio_id):
     return delete_entry(Servizio, servizio_id)
 
-def modify_servizio(servizio_id, **kwargs):
-    return modify_entry(Servizio, servizio_id, **kwargs)
+def modify_servizio(servizio_id, fields):
+    return modify_entry(Servizio, servizio_id, fields)
 
 def add_transazione(ammontare, data_transazione, modalita, id_associato, id_prestazione):
     transazione = Transazione(
@@ -94,5 +94,5 @@ def add_transazione(ammontare, data_transazione, modalita, id_associato, id_pres
 def delete_transazione(transazione_id):
     return delete_entry(Transazione, transazione_id)
 
-def modify_transazione(transazione_id, **kwargs):
-    return modify_entry(Transazione, transazione_id, **kwargs)
+def modify_transazione(transazione_id, fields):
+    return modify_entry(Transazione, transazione_id, fields)
